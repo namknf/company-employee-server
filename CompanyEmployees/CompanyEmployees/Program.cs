@@ -10,7 +10,7 @@ builder.Services.ConfigureLogging();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
-var nlogPath = Directory.GetCurrentDirectory() + "\nlog.config";
+var nlogPath = Directory.GetCurrentDirectory() + "\\nlog.config";
 LogManager.Setup().LoadConfigurationFromFile(nlogPath);
 
 var app = builder.Build();
