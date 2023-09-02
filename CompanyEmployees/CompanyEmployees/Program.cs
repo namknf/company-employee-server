@@ -1,34 +1,24 @@
+using CompanyEmployees.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
+using NLog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.ConfigureCors();
+builder.Services.ConfigureIIS();
+builder.Services.ConfigureLogging();
+
+LogManager.Setup().LoadConfigurationFromFile(Directory.GetCurrentDirectory() + "/nlog.config");
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
+app.UseStaticFiles();
+app.UseCors("Cors Policy");
+app.UseForwardedHeaders(new ForwardedHeadersOptions()
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    ForwardedHeaders = ForwardedHeaders.All
 });
-
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
