@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
 {
-    [Route("controller")]
+    [Route("[controller]")]
+    [ApiController]
     public class WeatherForecastController : Controller
     {
         private ILoggerService _logger;
