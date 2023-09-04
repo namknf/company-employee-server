@@ -9,13 +9,25 @@ namespace CompanyEmployees.Controllers
     {
         private ILoggerService _logger;
 
-        public WeatherForecastController(ILoggerService logger)
+        private readonly IRepositoryManager _repository;
+        public WeatherForecastController(IRepositoryManager repository, ILoggerService logger)
         {
+            _repository = repository;
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<IEnumerable<string>> Get()
+        {
+            _repository.Company.AnyMethodFromCompanyRepository();
+            _repository.Employee.AnyMethodFromEmployeeRepository();
+            _repository.Order.AnyMethodFromOrderRepository();
+            _repository.Address.AnyMethodFromAddressRepository();
+            return new string[] { "value1", "value2" };
+        }
+
+        [HttpGet]
+        public IEnumerable<string> GetLog()
         {
             _logger.LogInformation("Вот информационное сообщение от нашего контроллера значений.");
            

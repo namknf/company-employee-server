@@ -2,6 +2,7 @@
 using Entities;
 using LoggerService;
 using Microsoft.EntityFrameworkCore;
+using Repository;
 
 namespace CompanyEmployees.Extensions
 {
@@ -28,5 +29,8 @@ namespace CompanyEmployees.Extensions
 
         public static void ConnectToDb(this IServiceCollection services, IConfiguration config) =>
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(config.GetConnectionString("connect"), optAct => optAct.MigrationsAssembly("CompanyEmployees")));
+
+        public static void ConfigureRepositoryManager(this IServiceCollection services) =>
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
     }
 }
