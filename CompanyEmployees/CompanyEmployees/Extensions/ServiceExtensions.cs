@@ -1,5 +1,7 @@
 ﻿using Contracts;
+using Entities;
 using LoggerService;
+using Microsoft.EntityFrameworkCore;
 
 namespace CompanyEmployees.Extensions
 {
@@ -23,5 +25,8 @@ namespace CompanyEmployees.Extensions
 
         public static void ConfigureLogging(this IServiceCollection services) =>
             services.AddScoped<ILoggerService, LoggerManager>();
+
+        public static void ConnectToDb(this IServiceCollection services, IConfiguration config) =>
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(config.GetConnectionString("connect"), optAct => optAct.MigrationsAssembly("CompanyEmployees")));
     }
 }

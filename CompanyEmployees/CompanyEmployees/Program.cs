@@ -9,6 +9,7 @@ builder.Services.ConfigureIIS();
 builder.Services.ConfigureLogging();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+builder.Services.ConnectToDb(builder.Configuration);
 
 var nlogPath = Directory.GetCurrentDirectory() + "\\nlog.config";
 LogManager.Setup().LoadConfigurationFromFile(nlogPath);
