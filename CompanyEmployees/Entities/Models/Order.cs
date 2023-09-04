@@ -13,8 +13,6 @@ namespace Entities.Models
 
         public Company Company { get; set; }
 
-        public Employee Employee { get; set; }
-
         [Required(ErrorMessage = "OrderedAt is a required field.")]
         public DateTime OrderedAt { get; set; }
 
@@ -22,7 +20,5 @@ namespace Entities.Models
 
         [ForeignKey(nameof(Address))]
         public short AddressId { get; set; }
-
-        public Address ShipTo { get; set; }
     }
 }
