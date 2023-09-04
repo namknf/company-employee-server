@@ -10,7 +10,7 @@ namespace Repository
         {
         }
 
-        public void AnyMethodFromEmployeeRepository()
+        public IEnumerable<Employee> GetAllEmployees(bool trackChanges)
         {
             throw new NotImplementedException();
         }

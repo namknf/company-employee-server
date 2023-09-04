@@ -1,7 +1,9 @@
-﻿namespace Contracts
+﻿using Entities.Models;
+
+namespace Contracts
 {
     public interface IOrderRepository
     {
-        void AnyMethodFromOrderRepository();
+        IEnumerable<Order> GetAllOrders(bool trackChanges);
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace Contracts
+﻿using Entities.Models;
+
+namespace Contracts
 {
     public interface IAddressRepository
     {
-        void AnyMethodFromAddressRepository();
+        IEnumerable<Address> GetAllAddresses(bool trackChanges);
     }
 }

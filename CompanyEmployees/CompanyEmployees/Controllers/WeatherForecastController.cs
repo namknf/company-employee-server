@@ -16,15 +16,15 @@ namespace CompanyEmployees.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            _repository.Company.AnyMethodFromCompanyRepository();
-            _repository.Employee.AnyMethodFromEmployeeRepository();
-            _repository.Order.AnyMethodFromOrderRepository();
-            _repository.Address.AnyMethodFromAddressRepository();
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public ActionResult<IEnumerable<string>> Get()
+        //{
+        //    _repository.Company.AnyMethodFromCompanyRepository();
+        //    _repository.Employee.AnyMethodFromEmployeeRepository();
+        //    _repository.Order.AnyMethodFromOrderRepository();
+        //    _repository.Address.AnyMethodFromAddressRepository();
+        //    return new string[] { "value1", "value2" };
+        //}
 
         [HttpGet]
         public IEnumerable<string> GetLog()

@@ -10,9 +10,7 @@ namespace Repository
         {
         }
 
-        public void AnyMethodFromCompanyRepository()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<Company> GetAllCompanies(bool trackChanges) =>
+               FindAll(trackChanges).OrderBy(c => c.Name).ToList();
     }
 }

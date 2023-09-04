@@ -10,7 +10,7 @@ namespace Repository
         {
         }
 
-        public void AnyMethodFromAddressRepository()
+        public IEnumerable<Address> GetAllAddresses(bool trackChanges)
         {
             throw new NotImplementedException();
         }

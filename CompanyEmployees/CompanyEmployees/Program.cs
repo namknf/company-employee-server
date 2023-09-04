@@ -11,6 +11,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.ConnectToDb(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var nlogPath = Directory.GetCurrentDirectory() + "\\nlog.config";
 LogManager.Setup().LoadConfigurationFromFile(nlogPath);
