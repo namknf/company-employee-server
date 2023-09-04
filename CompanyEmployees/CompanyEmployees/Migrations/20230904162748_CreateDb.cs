@@ -71,32 +71,18 @@ namespace CompanyEmployees.Migrations
                 {
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ShippedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AddressId = table.Column<short>(type: "smallint", nullable: false),
-                    ShipToId = table.Column<short>(type: "smallint", nullable: false)
+                    AddressId = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_ShipToId",
-                        column: x => x.ShipToId,
-                        principalTable: "Addresses",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Orders_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "CompanyId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -114,16 +100,6 @@ namespace CompanyEmployees.Migrations
                 name: "IX_Orders_CompanyId",
                 table: "Orders",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_EmployeeId",
-                table: "Orders",
-                column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_ShipToId",
-                table: "Orders",
-                column: "ShipToId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

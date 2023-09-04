@@ -13,9 +13,6 @@ namespace Entities.Models
 
         public Company Company { get; set; }
 
-        [ForeignKey(nameof(Employee))]
-        public Guid EmployeeId { get; set; }
-
         public Employee Employee { get; set; }
 
         [Required(ErrorMessage = "OrderedAt is a required field.")]
@@ -25,9 +22,6 @@ namespace Entities.Models
 
         [ForeignKey(nameof(Address))]
         public short AddressId { get; set; }
-
-        [ForeignKey(nameof(ShipTo))]
-        public short ShipToId { get; set; }
 
         public Address ShipTo { get; set; }
     }

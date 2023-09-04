@@ -117,14 +117,8 @@ namespace CompanyEmployees.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("OrderedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<short>("ShipToId")
-                        .HasColumnType("smallint");
 
                     b.Property<DateTime?>("ShippedAt")
                         .HasColumnType("datetime2");
