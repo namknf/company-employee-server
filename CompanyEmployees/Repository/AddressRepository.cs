@@ -10,9 +10,10 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Address> GetAllAddresses(bool trackChanges)
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<Address> GetAddresses(bool trackChanges) =>
+               FindAll(trackChanges).OrderBy(c => c.Country).ToList();
+
+        public Address? GetAddress(short id, bool trackChanges) =>
+            FindByCondition(c => c.Code.Equals(id), trackChanges).SingleOrDefault();
     }
 }

@@ -4,6 +4,8 @@ namespace Contracts
 {
     public interface IAddressRepository
     {
-        IEnumerable<Address> GetAllAddresses(bool trackChanges);
+        IEnumerable<Address> GetAddresses(bool trackChanges);
+
+        Address? GetAddress(short id, bool trackChanges);
     }
 }
