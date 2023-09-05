@@ -10,9 +10,7 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Employee> GetAllEmployees(bool trackChanges)
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<Employee> GetEmployees(Guid companyId, bool trackChanges) =>
+               FindByCondition(e => e.CompanyId.Equals(companyId), trackChanges).OrderBy(e => e.Name);
     }
 }
