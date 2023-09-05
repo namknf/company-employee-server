@@ -15,5 +15,11 @@ namespace Repository
 
         public IEnumerable<Employee> GetEmployees(Guid companyId, bool trackChanges) =>
                FindByCondition(e => e.CompanyId.Equals(companyId), trackChanges).OrderBy(e => e.Name);
+
+        public void CreateEmployeeForCompany(Guid companyId, Employee employee)
+        {
+            employee.CompanyId = companyId;
+            Create(employee);
+        }
     }
 }
