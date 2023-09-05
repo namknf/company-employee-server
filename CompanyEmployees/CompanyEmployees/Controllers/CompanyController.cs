@@ -34,5 +34,21 @@ namespace CompanyEmployees.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCompany(Guid id)
+        {
+            var company = _repository.Company.GetCompany(id, trackChanges: false);
+            if (company == null)
+            {
+                _logger.LogInformation($"Company with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            else
+            {
+                var companyDto = _mapper.Map<CompanyDto>(company);
+                return Ok(companyDto);
+            }
+        }
     }
 }
