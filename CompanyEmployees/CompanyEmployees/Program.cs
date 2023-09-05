@@ -8,7 +8,13 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureIIS();
 builder.Services.ConfigureLogging();
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+
+builder.Services.AddControllers(conf =>
+{
+    conf.RespectBrowserAcceptHeader = true;
+    conf.ReturnHttpNotAcceptable = true;
+}).AddXmlDataContractSerializerFormatters();
+
 builder.Services.ConnectToDb(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
