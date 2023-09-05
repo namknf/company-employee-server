@@ -10,9 +10,10 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Order> GetAllOrders(bool trackChanges)
-        {
-            throw new NotImplementedException();
-        }
+        public Order? GetOrder(Guid companyId, Guid id, bool trackChanges) =>
+            FindByCondition(o => o.CompanyId.Equals(companyId) && o.Id.Equals(id), trackChanges).SingleOrDefault();
+
+        public IEnumerable<Order> GetOrders(Guid companyId, bool trackChanges) =>
+               FindByCondition(o => o.CompanyId.Equals(companyId), trackChanges).OrderBy(o => o.ShippedAt);
     }
 }
