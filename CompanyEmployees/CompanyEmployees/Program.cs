@@ -13,7 +13,8 @@ builder.Services.AddControllers(conf =>
 {
     conf.RespectBrowserAcceptHeader = true;
     conf.ReturnHttpNotAcceptable = true;
-}).AddXmlDataContractSerializerFormatters();
+}).AddXmlDataContractSerializerFormatters()
+  .AddCustomCSVFormatter();
 
 builder.Services.ConnectToDb(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
