@@ -77,7 +77,7 @@ namespace CompanyEmployees.Controllers
             _repository.Order.CreateOrderForCompany(companyId, orderEntity);
             _repository.Save();
             var orderToReturn = _mapper.Map<OrderDto>(orderEntity);
-            return CreatedAtRoute("GetOrderForCompany", new
+            return CreatedAtRoute("CreateOrderForCompany", new
             {
                 companyId,
                 id = orderToReturn.Id
@@ -90,7 +90,7 @@ namespace CompanyEmployees.Controllers
             var order = _repository.Order.GetOrder(companyId, id, trackChanges: false);
             if (order == null)
             {
-                _logger.LogInformation($"Company with id: {id} doesn't exist in the database.");
+                _logger.LogInformation($"Order with id: {id} doesn't exist in the database.");
                 return NotFound();
             }
             _repository.Order.DeleteOrder(order);

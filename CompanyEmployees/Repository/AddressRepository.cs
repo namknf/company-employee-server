@@ -15,5 +15,15 @@ namespace Repository
 
         public Address? GetAddress(short id, bool trackChanges) =>
             FindByCondition(c => c.Code.Equals(id), trackChanges).SingleOrDefault();
+
+        public void DeleteAddress(Address address)
+        {
+            Delete(address);
+        }
+
+        public void CreateAddress(Address address)
+        {
+            Create(address);
+        }
     }
 }

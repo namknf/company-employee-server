@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -50,6 +51,36 @@ namespace CompanyEmployees.Controllers
                 var addressDto = _mapper.Map<AddressDto>(address);
                 return Ok(addressDto);
             }
+        }
+
+        [HttpPost]
+        public IActionResult CreateAddress([FromBody] AddressForCreationDto address)
+        {
+            if (address == null)
+            {
+                _logger.LogError("AddressForCreationDto object sent from client is null.");
+                return BadRequest("AddressForCreationDto object is null");
+            }
+
+            var addressEntity = _mapper.Map<Address>(address);
+            _repository.Address.CreateAddress(addressEntity);
+            _repository.Save();
+            var addressToReturn = _mapper.Map<AddressDto>(addressEntity);
+            return CreatedAtRoute("AddressById", new { id = addressToReturn.Code }, addressToReturn);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteAddress(short id)
+        {
+            var address = _repository.Address.GetAddress(id, trackChanges: false);
+            if (address == null)
+            {
+                _logger.LogInformation($"Address with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.Address.DeleteAddress(address);
+            _repository.Save();
+            return NoContent();
         }
     }
 }
