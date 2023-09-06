@@ -9,5 +9,7 @@ namespace Entities.DataTransferObjects
         public Address Address { get; set; }
 
         public IEnumerable<EmployeeForCreationDto> Employees { get; set; }
+
+        public IEnumerable<OrderDto> Orders { get; set; }
     }
 }
