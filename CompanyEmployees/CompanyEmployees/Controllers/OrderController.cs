@@ -97,5 +97,33 @@ namespace CompanyEmployees.Controllers
             _repository.Save();
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateOrderForCompany(Guid companyId, Guid id, [FromBody] OrderForUpdateDto order)
+        {
+            if (order == null)
+            {
+                _logger.LogError("OrderForUpdateDto object sent from client is null.");
+                return BadRequest("OrderForUpdateDto object is null");
+            }
+
+            var company = _repository.Company.GetCompany(companyId, trackChanges: false);
+            if (company == null)
+            {
+                _logger.LogInformation($"Company with id: {companyId} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            var orderEntity = _repository.Order.GetOrder(companyId, id, true);
+            if (orderEntity == null)
+            {
+                _logger.LogInformation($"Order with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            _mapper.Map(order, orderEntity);
+            _repository.Save();
+            return NoContent();
+        }
     }
 }

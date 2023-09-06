@@ -31,6 +31,8 @@ namespace CompanyEmployees
             CreateMap<AddressForCreationDto, Address>();
 
             CreateMap<OrderForCreationDto, Order>();
+
+            CreateMap<OrderForUpdateDto, Order>().ReverseMap();
         }
     }
 }
