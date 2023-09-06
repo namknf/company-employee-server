@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -35,7 +36,7 @@ namespace CompanyEmployees.Controllers
             return Ok(ordersDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "OrderById")]
         public IActionResult GetOrder(Guid companyId, Guid id)
         {
             var company = _repository.Company.GetCompany(companyId, trackChanges: false);
@@ -56,6 +57,45 @@ namespace CompanyEmployees.Controllers
                 var orderDto = _mapper.Map<OrderDto>(order);
                 return Ok(orderDto);
             }
+        }
+
+        [HttpPost]
+        public IActionResult CreateOrderForCompany(Guid companyId, [FromBody] OrderForCreationDto order)
+        {
+            if (order == null)
+            {
+                _logger.LogError("OrderForCreationDto object sent from client is null.");
+                return BadRequest("OrderForCreationDto object is null");
+            }
+            var company = _repository.Company.GetCompany(companyId, trackChanges: false);
+            if (company == null)
+            {
+                _logger.LogInformation($"Company with id: {companyId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var orderEntity = _mapper.Map<Order>(order);
+            _repository.Order.CreateOrderForCompany(companyId, orderEntity);
+            _repository.Save();
+            var orderToReturn = _mapper.Map<OrderDto>(orderEntity);
+            return CreatedAtRoute("GetOrderForCompany", new
+            {
+                companyId,
+                id = orderToReturn.Id
+            }, orderToReturn);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteOrder(Guid id, Guid companyId)
+        {
+            var order = _repository.Order.GetOrder(companyId, id, trackChanges: false);
+            if (order == null)
+            {
+                _logger.LogInformation($"Company with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.Order.DeleteOrder(order);
+            _repository.Save();
+            return NoContent();
         }
     }
 }

@@ -10,6 +10,17 @@ namespace Repository
         {
         }
 
+        public void CreateOrderForCompany(Guid companyId, Order order)
+        {
+            order.CompanyId = companyId;
+            Create(order);
+        }
+
+        public void DeleteOrder(Order order)
+        {
+            Delete(order);
+        }
+
         public Order? GetOrder(Guid companyId, Guid id, bool trackChanges) =>
             FindByCondition(o => o.CompanyId.Equals(companyId) && o.Id.Equals(id), trackChanges).SingleOrDefault();
 
