@@ -10,7 +10,7 @@ namespace CompanyEmployees
         {
             CreateMap<Company, CompanyDto>()
                 .ForMember(c => c.FullAddress,
-                opt => opt.MapFrom(x => string.Join(' ', x.Address.Country, x.Address.City, x.Address.Region)));
+                opt => opt.MapFrom(x => string.Join(' ', x.Address.Country, x.Address.City, x.Address.Region).Trim()));
 
             CreateMap<Employee, EmployeeDto>();
 
@@ -18,7 +18,7 @@ namespace CompanyEmployees
 
             CreateMap<Address, AddressDto>()
                 .ForMember(c => c.FullAddress,
-                opt => opt.MapFrom(x => string.Join(' ', x.Country, x.City, x.Region)));
+                opt => opt.MapFrom(x => string.Join(' ', x.Country, x.City, x.Region).Trim()));
 
             CreateMap<CompanyForCreationDto, Company>();
 

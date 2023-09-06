@@ -28,6 +28,10 @@ namespace CompanyEmployees.Controllers
             try
             {
                 var companies = _repository.Company.GetAllCompanies(false);
+                var addresses = _repository.Address.GetAddresses(false);
+                foreach (var comp in companies)
+                    comp.Address = addresses.FirstOrDefault(a => a.Code == comp.AddressId);
+
                 var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
                 return Ok(companiesDto);
             }
@@ -49,6 +53,8 @@ namespace CompanyEmployees.Controllers
             }
             else
             {
+                var address = _repository.Address.GetAddress(company.AddressId, false);
+                company.Address = address;
                 var companyDto = _mapper.Map<CompanyDto>(company);
                 return Ok(companyDto);
             }

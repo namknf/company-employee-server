@@ -36,7 +36,7 @@ namespace CompanyEmployees.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "AddressById")]
         public IActionResult GetAddress(short id)
         {
             var address = _repository.Address.GetAddress(id, false);
