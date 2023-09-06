@@ -1,15 +1,13 @@
-﻿using Entities.Models;
-
-namespace Entities.DataTransferObjects
+﻿namespace Entities.DataTransferObjects
 {
     public class CompanyForCreationDto
     {
         public string Name { get; set; }
 
-        public Address Address { get; set; }
+        public AddressForCreationDto Address { get; set; }
 
         public IEnumerable<EmployeeForCreationDto> Employees { get; set; }
 
-        public IEnumerable<OrderDto> Orders { get; set; }
+        public IEnumerable<OrderForCreationDto> Orders { get; set; }
     }
 }
