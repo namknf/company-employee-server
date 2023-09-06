@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -79,6 +80,29 @@ namespace CompanyEmployees.Controllers
                 return NotFound();
             }
             _repository.Address.DeleteAddress(address);
+            _repository.Save();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateAddress(short id, [FromBody] JsonPatchDocument<AddressForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                _logger.LogError("patchDoc object sent from client is null.");
+                return BadRequest("patchDoc object is null");
+            }
+
+            var addressEntity = _repository.Address.GetAddress(id, true);
+            if (addressEntity == null)
+            {
+                _logger.LogInformation($"Address with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            var addressToPatch = _mapper.Map<AddressForUpdateDto>(addressEntity);
+            patchDoc.ApplyTo(addressToPatch);
+            _mapper.Map(addressToPatch, addressEntity);
             _repository.Save();
             return NoContent();
         }

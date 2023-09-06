@@ -164,6 +164,5 @@ namespace CompanyEmployees.Controllers
             _repository.Save();
             return NoContent();
         }
-
     }
 }

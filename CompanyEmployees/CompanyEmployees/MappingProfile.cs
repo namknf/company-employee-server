@@ -30,6 +30,8 @@ namespace CompanyEmployees
 
             CreateMap<AddressForCreationDto, Address>();
 
+            CreateMap<AddressForUpdateDto, Address>().ReverseMap();
+
             CreateMap<OrderForCreationDto, Order>();
 
             CreateMap<OrderForUpdateDto, Order>().ReverseMap();
