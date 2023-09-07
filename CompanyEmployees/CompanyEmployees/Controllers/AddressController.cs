@@ -107,7 +107,15 @@ namespace CompanyEmployees.Controllers
             }
 
             var addressToPatch = _mapper.Map<AddressForUpdateDto>(addressEntity);
-            patchDoc.ApplyTo(addressToPatch);
+            patchDoc.ApplyTo(addressToPatch, ModelState);
+            TryValidateModel(addressToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the patch document");
+                return UnprocessableEntity(ModelState);
+            }
+
             _mapper.Map(addressToPatch, addressEntity);
             _repository.Save();
             return NoContent();

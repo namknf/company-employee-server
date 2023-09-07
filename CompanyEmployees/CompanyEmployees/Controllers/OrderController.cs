@@ -115,6 +115,12 @@ namespace CompanyEmployees.Controllers
                 return BadRequest("OrderForUpdateDto object is null");
             }
 
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the OrderForUpdateDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
             var company = _repository.Company.GetCompany(companyId, trackChanges: false);
             if (company == null)
             {
@@ -158,7 +164,15 @@ namespace CompanyEmployees.Controllers
             }
 
             var orderToPatch = _mapper.Map<OrderForUpdateDto>(orderEntity);
-            patchDoc.ApplyTo(orderToPatch);
+            patchDoc.ApplyTo(orderToPatch, ModelState);
+            TryValidateModel(orderToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the patch document");
+                return UnprocessableEntity(ModelState);
+            }
+
             _mapper.Map(orderToPatch, orderEntity);
             _repository.Save();
             return NoContent();
