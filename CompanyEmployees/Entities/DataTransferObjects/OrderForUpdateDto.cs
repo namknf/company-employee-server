@@ -1,9 +1,6 @@
 ﻿namespace Entities.DataTransferObjects
 {
-    public class OrderForUpdateDto
+    public class OrderForUpdateDto : OrderForManipulationDto
     {
-        public DateTime OrderedAt { get; set; }
-
-        public DateTime? ShippedAt { get; set; }
     }
 }
