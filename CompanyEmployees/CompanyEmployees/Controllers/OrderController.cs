@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CompanyEmployees.ActionFilters;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
@@ -61,18 +62,13 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateOrderForCompany(Guid companyId, [FromBody] OrderForCreationDto order)
         {
             if (order == null)
             {
                 _logger.LogError("OrderForCreationDto object sent from client is null.");
                 return BadRequest("OrderForCreationDto object is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the OrderForCreationDto object");
-                return UnprocessableEntity(ModelState);
             }
 
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
@@ -107,18 +103,13 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateOrderForCompany(Guid companyId, Guid id, [FromBody] OrderForUpdateDto order)
         {
             if (order == null)
             {
                 _logger.LogError("OrderForUpdateDto object sent from client is null.");
                 return BadRequest("OrderForUpdateDto object is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the OrderForUpdateDto object");
-                return UnprocessableEntity(ModelState);
             }
 
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);

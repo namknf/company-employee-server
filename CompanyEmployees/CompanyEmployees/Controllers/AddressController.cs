@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CompanyEmployees.ActionFilters;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
@@ -55,18 +56,13 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateAddress([FromBody] AddressForCreationDto address)
         {
             if (address == null)
             {
                 _logger.LogError("AddressForCreationDto object sent from client is null.");
                 return BadRequest("AddressForCreationDto object is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the AddressForCreationDto object");
-                return UnprocessableEntity(ModelState);
             }
 
             var addressEntity = _mapper.Map<Address>(address);
@@ -91,6 +87,7 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> PartiallyUpdateAddress(short id, [FromBody] JsonPatchDocument<AddressForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
@@ -109,12 +106,6 @@ namespace CompanyEmployees.Controllers
             var addressToPatch = _mapper.Map<AddressForUpdateDto>(addressEntity);
             patchDoc.ApplyTo(addressToPatch, ModelState);
             TryValidateModel(addressToPatch);
-
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the patch document");
-                return UnprocessableEntity(ModelState);
-            }
 
             _mapper.Map(addressToPatch, addressEntity);
             await _repository.SaveAsync();

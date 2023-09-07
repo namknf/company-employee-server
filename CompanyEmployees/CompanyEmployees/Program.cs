@@ -1,3 +1,4 @@
+using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,9 @@ builder.Services.AddControllers(conf =>
 builder.Services.ConnectToDb(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<ValidationFilterAttribute>();
+builder.Services.AddScoped<ValidateCompanyExistsAttribute>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
