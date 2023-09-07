@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -10,11 +11,11 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Address> GetAddresses(bool trackChanges) =>
-               FindAll(trackChanges).OrderBy(c => c.Country).ToList();
+        public async Task<IEnumerable<Address>> GetAddressesAsync(bool trackChanges) =>
+               await FindAll(trackChanges).OrderBy(c => c.Country).ToListAsync();
 
-        public Address? GetAddress(short id, bool trackChanges) =>
-            FindByCondition(c => c.Code.Equals(id), trackChanges).SingleOrDefault();
+        public async Task<Address?> GetAddressAsync(short id, bool trackChanges) =>
+            await FindByCondition(c => c.Code.Equals(id), trackChanges).SingleOrDefaultAsync();
 
         public void DeleteAddress(Address address)
         {

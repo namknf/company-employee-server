@@ -4,9 +4,9 @@ namespace Contracts
 {
     public interface IAddressRepository
     {
-        IEnumerable<Address> GetAddresses(bool trackChanges);
+        Task<IEnumerable<Address>> GetAddressesAsync(bool trackChanges);
 
-        Address? GetAddress(short id, bool trackChanges);
+        Task<Address?> GetAddressAsync(short id, bool trackChanges);
 
         void DeleteAddress(Address address);
 

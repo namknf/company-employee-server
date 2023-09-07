@@ -10,6 +10,6 @@
 
         IAddressRepository Address { get; }
 
-        void Save();
+        Task SaveAsync();
     }
 }

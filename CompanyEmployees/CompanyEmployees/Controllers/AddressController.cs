@@ -23,11 +23,11 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAdresses()
+        public async Task<IActionResult> GetAdresses()
         {
             try
             {
-                var adresses = _repository.Address.GetAddresses(false);
+                var adresses = await _repository.Address.GetAddressesAsync(false);
                 var adressesDto = _mapper.Map<IEnumerable<AddressDto>>(adresses);
                 return Ok(adressesDto);
             }
@@ -39,9 +39,9 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet("{id}", Name = "AddressById")]
-        public IActionResult GetAddress(short id)
+        public async Task<IActionResult> GetAddress(short id)
         {
-            var address = _repository.Address.GetAddress(id, false);
+            var address = await _repository.Address.GetAddressAsync(id, false);
             if (address == null)
             {
                 _logger.LogInformation($"Address with id: {id} doesn't exist in the database.");
@@ -55,7 +55,7 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAddress([FromBody] AddressForCreationDto address)
+        public async Task<IActionResult> CreateAddress([FromBody] AddressForCreationDto address)
         {
             if (address == null)
             {
@@ -71,27 +71,27 @@ namespace CompanyEmployees.Controllers
 
             var addressEntity = _mapper.Map<Address>(address);
             _repository.Address.CreateAddress(addressEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             var addressToReturn = _mapper.Map<AddressDto>(addressEntity);
             return CreatedAtRoute("AddressById", new { id = addressToReturn.Code }, addressToReturn);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteAddress(short id)
+        public async Task<IActionResult> DeleteAddress(short id)
         {
-            var address = _repository.Address.GetAddress(id, trackChanges: false);
+            var address = await _repository.Address.GetAddressAsync(id, trackChanges: false);
             if (address == null)
             {
                 _logger.LogInformation($"Address with id: {id} doesn't exist in the database.");
                 return NotFound();
             }
             _repository.Address.DeleteAddress(address);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartiallyUpdateAddress(short id, [FromBody] JsonPatchDocument<AddressForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdateAddress(short id, [FromBody] JsonPatchDocument<AddressForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
             {
@@ -99,7 +99,7 @@ namespace CompanyEmployees.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var addressEntity = _repository.Address.GetAddress(id, true);
+            var addressEntity = await _repository.Address.GetAddressAsync(id, true);
             if (addressEntity == null)
             {
                 _logger.LogInformation($"Address with id: {id} doesn't exist in the database.");
@@ -117,7 +117,7 @@ namespace CompanyEmployees.Controllers
             }
 
             _mapper.Map(addressToPatch, addressEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
     }
