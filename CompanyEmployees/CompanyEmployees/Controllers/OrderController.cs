@@ -68,6 +68,13 @@ namespace CompanyEmployees.Controllers
                 _logger.LogError("OrderForCreationDto object sent from client is null.");
                 return BadRequest("OrderForCreationDto object is null");
             }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the OrderForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
             var company = _repository.Company.GetCompany(companyId, trackChanges: false);
             if (company == null)
             {

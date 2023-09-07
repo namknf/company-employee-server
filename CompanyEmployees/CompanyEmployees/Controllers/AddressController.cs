@@ -63,6 +63,12 @@ namespace CompanyEmployees.Controllers
                 return BadRequest("AddressForCreationDto object is null");
             }
 
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the AddressForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
             var addressEntity = _mapper.Map<Address>(address);
             _repository.Address.CreateAddress(addressEntity);
             _repository.Save();

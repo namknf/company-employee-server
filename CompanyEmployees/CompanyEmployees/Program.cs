@@ -1,5 +1,6 @@
 using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,11 @@ builder.Services.AddControllers(conf =>
 builder.Services.ConnectToDb(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 var nlogPath = Directory.GetCurrentDirectory() + "\\nlog.config";
 LogManager.Setup().LoadConfigurationFromFile(nlogPath);

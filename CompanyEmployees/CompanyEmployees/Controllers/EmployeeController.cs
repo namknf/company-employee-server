@@ -4,6 +4,7 @@ using Entities.DataTransferObjects;
 using Entities.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CompanyEmployees.Controllers
 {
@@ -67,6 +68,13 @@ namespace CompanyEmployees.Controllers
                 _logger.LogError("EmployeeForCreationDto object sent from client is null.");
                 return BadRequest("EmployeeForCreationDto object is null");
             }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the EmployeeForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
             var company = _repository.Company.GetCompany(companyId, trackChanges: false);
             if (company == null)
             {
