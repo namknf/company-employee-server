@@ -1,15 +1,15 @@
 ﻿using Contracts;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CompanyEmployees.ActionFilters
 {
-    public class ValidateEmployeeForCompanyExistsAttribute : IAsyncActionFilter
+    public class ValidateOrderForCompanyExistsAttribute : IAsyncActionFilter
     {
         private readonly IRepositoryManager _repository;
         private readonly ILoggerService _logger;
 
-        public ValidateEmployeeForCompanyExistsAttribute(IRepositoryManager repository, ILoggerService logger)
+        public ValidateOrderForCompanyExistsAttribute(IRepositoryManager repository, ILoggerService logger)
         {
             _repository = repository;
             _logger = logger;
@@ -21,23 +21,25 @@ namespace CompanyEmployees.ActionFilters
             var trackChanges = (method.Equals("PUT") || method.Equals("PATCH")) ? true : false;
             var companyId = (Guid)context.ActionArguments["companyId"];
             var company = await _repository.Company.GetCompanyAsync(companyId, false);
+
             if (company == null)
             {
                 _logger.LogInformation($"Company with id: {companyId} doesn't exist in the database.");
                 context.Result = new NotFoundResult();
                 return;
             }
-            var id = (Guid)context.ActionArguments["id"];
-            var employee = await _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges);
 
-            if (employee == null)
+            var id = (Guid)context.ActionArguments["id"];
+            var order = await _repository.Order.GetOrderAsync(companyId, id, trackChanges);
+
+            if (order == null)
             {
-                _logger.LogInformation($"Employee with id: {id} doesn't exist in the database.");
+                _logger.LogInformation($"order with id: {id} doesn't exist in the database.");
                 context.Result = new NotFoundResult();
             }
             else
             {
-                context.HttpContext.Items.Add("employee", employee);
+                context.HttpContext.Items.Add("order", order);
                 await next();
             }
         }

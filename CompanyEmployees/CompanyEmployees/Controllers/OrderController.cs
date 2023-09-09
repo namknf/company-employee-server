@@ -89,6 +89,7 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidateOrderForCompanyExistsAttribute))]
         public async Task<IActionResult> DeleteOrder(Guid id, Guid companyId)
         {
             var order = await _repository.Order.GetOrderAsync(companyId, id, trackChanges: false);
@@ -103,35 +104,18 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidateOrderForCompanyExistsAttribute))]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateOrderForCompany(Guid companyId, Guid id, [FromBody] OrderForUpdateDto order)
+        public async Task<IActionResult> UpdateOrderForCompany([FromBody] OrderForUpdateDto order)
         {
-            if (order == null)
-            {
-                _logger.LogError("OrderForUpdateDto object sent from client is null.");
-                return BadRequest("OrderForUpdateDto object is null");
-            }
-
-            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
-            if (company == null)
-            {
-                _logger.LogInformation($"Company with id: {companyId} doesn't exist in the database.");
-                return NotFound();
-            }
-
-            var orderEntity = await _repository.Order.GetOrderAsync(companyId, id, true);
-            if (orderEntity == null)
-            {
-                _logger.LogInformation($"Order with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
-
+            var orderEntity = HttpContext.Items["order"] as Order;
             _mapper.Map(order, orderEntity);
             await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidateOrderForCompanyExistsAttribute))]
         public async Task<IActionResult> PartiallyUpdateOrderForCompany(Guid companyId, Guid id, [FromBody] JsonPatchDocument<OrderForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
@@ -140,20 +124,7 @@ namespace CompanyEmployees.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
-            if (company == null)
-            {
-                _logger.LogInformation($"Company with id: {companyId} doesn't exist in the database.");
-                return NotFound();
-            }
-
-            var orderEntity = await _repository.Order.GetOrderAsync(companyId, id, true);
-            if (orderEntity == null)
-            {
-                _logger.LogInformation($"Order with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
-
+            var orderEntity = HttpContext.Items["order"] as Order;
             var orderToPatch = _mapper.Map<OrderForUpdateDto>(orderEntity);
             patchDoc.ApplyTo(orderToPatch, ModelState);
             TryValidateModel(orderToPatch);

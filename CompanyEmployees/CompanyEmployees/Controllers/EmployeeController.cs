@@ -15,6 +15,7 @@ namespace CompanyEmployees.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+
         public EmployeeController(IRepositoryManager repository, ILoggerService logger, IMapper mapper)
         {
             _repository = repository;
