@@ -7,7 +7,6 @@ using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Repository.DataShaping;
 
 namespace CompanyEmployees.Controllers
 {
@@ -26,6 +25,13 @@ namespace CompanyEmployees.Controllers
             _logger = logger;
             _mapper = mapper;
             _dataShaper = dataShaper;
+        }
+
+        [HttpOptions]
+        public IActionResult GetCompaniesOptions()
+        {
+            Response.Headers.Add("Allow", "GET, OPTIONS, POST");
+            return Ok();
         }
 
         [HttpGet]

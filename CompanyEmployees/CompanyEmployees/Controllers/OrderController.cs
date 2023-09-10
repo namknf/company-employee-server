@@ -28,6 +28,13 @@ namespace CompanyEmployees.Controllers
             _dataShaper = dataShaper;
         }
 
+        [HttpOptions]
+        public IActionResult GetCompaniesOptions()
+        {
+            Response.Headers.Add("Allow", "GET, OPTIONS, POST");
+            return Ok();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetOrdersForCompany(Guid companyId, OrderParameters parms)
         {
