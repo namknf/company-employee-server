@@ -1,7 +1,9 @@
 ﻿using CompanyEmployees.Controllers;
 using Contracts;
 using Entities;
+using Entities.Models;
 using LoggerService;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +56,21 @@ namespace CompanyEmployees.Extensions
                 opt.Conventions.Controller<CompanyController>().HasApiVersion(new ApiVersion(1, 0));
                 opt.Conventions.Controller<CompaniesV2Controller>().HasDeprecatedApiVersion(new ApiVersion(2, 0));
             });
+        }
+
+        public static void ConfigureIdentity(this IServiceCollection services)
+        {
+            var builder = services.AddIdentityCore<User>(o =>
+            {
+                o.Password.RequireDigit = true;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 10;
+                o.User.RequireUniqueEmail = true;
+            });
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
         }
     }
 }

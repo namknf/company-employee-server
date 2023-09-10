@@ -11,6 +11,9 @@ builder.Services.ConfigureIIS();
 builder.Services.ConfigureLogging();
 builder.Services.AddAuthorization();
 
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
+
 builder.Services.AddControllers(conf =>
 {
     conf.RespectBrowserAcceptHeader = true;
