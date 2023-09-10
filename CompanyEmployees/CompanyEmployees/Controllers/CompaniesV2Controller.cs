@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CompanyEmployees.Controllers
 {
     [Route("api/companies")]
+    [ApiExplorerSettings(GroupName = "v2")]
     [ApiController]
     public class CompaniesV2Controller : ControllerBase
     {

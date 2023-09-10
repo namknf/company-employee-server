@@ -35,6 +35,8 @@ builder.Services.AddScoped<ValidateCompanyExistsAttribute>();
 builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 builder.Services.ConfigureDataShaper();
 
+builder.Services.ConfigureSwagger();
+
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -54,4 +56,12 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions()
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "CompanyEmployee v1");
+    s.SwaggerEndpoint("/swagger/v2/swagger.json", "CompanyEmployee v2");
+});
+
 app.Run();

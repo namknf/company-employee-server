@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 namespace CompanyEmployees.Controllers
 {
     [Route("api/[controller]")]
+    [ApiExplorerSettings(GroupName = "v1")]
     [ApiController]
     public class CompanyController : ControllerBase
     {
