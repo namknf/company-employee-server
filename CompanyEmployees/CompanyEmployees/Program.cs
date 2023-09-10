@@ -25,6 +25,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateCompanyExistsAttribute>();
+builder.Services.ConfigureDataShaper();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
