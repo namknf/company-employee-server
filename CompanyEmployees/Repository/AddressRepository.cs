@@ -11,20 +11,7 @@ namespace Repository
         {
         }
 
-        public async Task<IEnumerable<Address>> GetAddressesAsync(bool trackChanges) =>
-               await FindAll(trackChanges).OrderBy(c => c.Country).ToListAsync();
-
         public async Task<Address?> GetAddressAsync(short id, bool trackChanges) =>
             await FindByCondition(c => c.Code.Equals(id), trackChanges).SingleOrDefaultAsync();
-
-        public void DeleteAddress(Address address)
-        {
-            Delete(address);
-        }
-
-        public void CreateAddress(Address address)
-        {
-            Create(address);
-        }
     }
 }
