@@ -12,6 +12,7 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureIIS();
 builder.Services.ConfigureLogging();
 builder.Services.AddAuthorization();
+builder.Services.ConfigureJWT(builder.Configuration);
 
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
@@ -25,7 +26,6 @@ builder.Services.AddControllers(conf =>
   .AddCustomCSVFormatter();
 
 builder.Services.ConnectToDb(builder.Configuration);
-builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.ConfigureVersioning();
@@ -54,6 +54,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions()
     ForwardedHeaders = ForwardedHeaders.All
 });
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
