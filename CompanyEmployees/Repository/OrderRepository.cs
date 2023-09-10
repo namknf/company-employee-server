@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository
@@ -25,7 +26,10 @@ namespace Repository
         public async Task<Order?> GetOrderAsync(Guid companyId, Guid id, bool trackChanges) =>
             await FindByCondition(o => o.CompanyId.Equals(companyId) && o.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Order>> GetOrdersAsync(Guid companyId, bool trackChanges) =>
-               await FindByCondition(o => o.CompanyId.Equals(companyId), trackChanges).OrderBy(o => o.ShippedAt).ToListAsync();
+        public async Task<PagedList<Order>> GetOrdersAsync(Guid companyId, OrderParameters parms, bool trackChanges)
+        {
+            var orders = await FindByCondition(o => o.CompanyId.Equals(companyId), trackChanges).OrderBy(o => o.ShippedAt).ToListAsync();
+            return PagedList<Order>.ToPagedList(orders, parms.PageNumber, parms.PageSize);
+        }
     }
 }
