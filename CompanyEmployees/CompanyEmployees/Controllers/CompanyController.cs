@@ -4,7 +4,9 @@ using CompanyEmployees.ModelBinders;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CompanyEmployees.Controllers
 {
@@ -24,14 +26,15 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCompanies()
+        public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters parms)
         {
             try
             {
-                var companies = await _repository.Company.GetAllCompaniesAsync(false);
+                var companies = await _repository.Company.GetAllCompaniesAsync(parms, false);
                 foreach (var comp in companies)
                     comp.Address = await _repository.Address.GetAddressAsync(comp.AddressId, false);
 
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(companies.MetaData));
                 var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
                 return Ok(companiesDto);
             }
