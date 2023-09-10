@@ -36,6 +36,7 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
         public async Task<IActionResult> GetOrdersForCompany(Guid companyId, OrderParameters parms)
         {
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
