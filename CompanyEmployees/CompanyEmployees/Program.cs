@@ -1,8 +1,10 @@
 using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
+using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Repository.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,7 @@ builder.Services.ConfigureVersioning();
 
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateCompanyExistsAttribute>();
+builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 builder.Services.ConfigureDataShaper();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
