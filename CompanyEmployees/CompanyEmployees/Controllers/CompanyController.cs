@@ -31,11 +31,21 @@ namespace CompanyEmployees.Controllers
             try
             {
                 var companies = await _repository.Company.GetAllCompaniesAsync(parms, false);
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(companies.MetaData));
                 foreach (var comp in companies)
                     comp.Address = await _repository.Address.GetAddressAsync(comp.AddressId, false);
 
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(companies.MetaData));
-                var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+                var filteredCompanies = new List<Company>();
+                IEnumerable<CompanyDto> companiesDto;
+
+                if (!string.IsNullOrEmpty(parms.Country))
+                {
+                    filteredCompanies = companies.Where(c => c.Address.Country == parms.Country).ToList();
+                    companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(filteredCompanies);
+                }
+                else
+                    companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+
                 return Ok(companiesDto);
             }
             catch (Exception ex)
