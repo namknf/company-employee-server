@@ -20,6 +20,11 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Получение адреса компании
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <returns>Адрес компании</returns>
         [HttpGet(Name = "AddressByCompany")]
         public async Task<IActionResult> GetAddressByCompany(Guid companyId)
         {

@@ -36,6 +36,11 @@ namespace CompanyEmployees.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Получение всех компаний
+        /// </summary>
+        /// <param name="parms">Доп. параметры для пейджинга, сортировки</param>
+        /// <returns>Компании</returns>
         [HttpGet(Name = "GetCompanies"), Authorize]
         public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters parms)
         {
@@ -53,6 +58,11 @@ namespace CompanyEmployees.Controllers
             }
         }
 
+        /// <summary>
+        /// Получение компании по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор компании</param>
+        /// <returns>Компания</returns>
         [HttpGet("{id}", Name = "CompanyById"), Authorize]
         public async Task<IActionResult> GetCompany(Guid id)
         {
@@ -69,6 +79,11 @@ namespace CompanyEmployees.Controllers
             }
         }
 
+        /// <summary>
+        /// Создание компании
+        /// </summary>
+        /// <param name="company">Модель для создания компании</param>
+        /// <returns>Созданная компания</returns>
         [HttpPost, Authorize]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyForCreationDto company)
@@ -86,6 +101,11 @@ namespace CompanyEmployees.Controllers
             return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn);
         }
 
+        /// <summary>
+        /// Получение коллекции компаний
+        /// </summary>
+        /// <param name="ids">Идентификаторы искомых компаний</param>
+        /// <returns>Найденный компании</returns>
         [HttpGet("collection/({ids})", Name = "CompanyCollection"), Authorize]
         public async Task<IActionResult> GetCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
@@ -104,6 +124,11 @@ namespace CompanyEmployees.Controllers
             return Ok(companiesToReturn);
         }
 
+        /// <summary>
+        /// Создание нескольких компаний сразу
+        /// </summary>
+        /// <param name="companyCollection">Массив компаний, которые необходимо создать</param>
+        /// <returns>Массив созданных компаний</returns>
         [HttpPost("collection"), Authorize]
         public async Task<IActionResult> CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
         {
@@ -124,9 +149,13 @@ namespace CompanyEmployees.Controllers
             return CreatedAtRoute("CompanyCollection", new { ids }, companyCollectionToReturn);
         }
 
+        /// <summary>
+        /// Удаление компании
+        /// </summary>
+        /// <returns>Удалено (успешно)</returns>
         [HttpDelete("{id}"), Authorize]
         [ServiceFilter(typeof(ValidateCompanyExistsAttribute))]
-        public async Task<IActionResult> DeleteCompany(Guid id)
+        public async Task<IActionResult> DeleteCompany()
         {
             var company = HttpContext.Items["company"] as Company;
             _repository.Company.DeleteCompany(company);
@@ -134,6 +163,12 @@ namespace CompanyEmployees.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Редактирование компании
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        /// <param name="company">Модель с измененными свойствами</param>
+        /// <returns>Измененная модель</returns>
         [HttpPut("{id}"), Authorize]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateCompanyExistsAttribute))]

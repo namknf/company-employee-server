@@ -9,6 +9,9 @@ using System.Xml.Linq;
 
 namespace CompanyEmployees.Controllers
 {
+    /// <summary>
+    /// Авторизация/регистрация
+    /// </summary>
     [Route("api/authentication")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -26,6 +29,11 @@ namespace CompanyEmployees.Controllers
             _authManager = authManager;
         }
 
+        /// <summary>
+        /// Регистрация нового пользователя
+        /// </summary>
+        /// <param name="userForRegistration">Модель пользователя для регистрации</param>
+        /// <returns>Зарегистрированный пользователь</returns>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
@@ -47,6 +55,11 @@ namespace CompanyEmployees.Controllers
             return StatusCode(201);
         }
 
+        /// <summary>
+        /// Авторизация
+        /// </summary>
+        /// <param name="user">Авторизованный пользователь</param>
+        /// <returns>Токен</returns>
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)

@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository;
 using Repository.DataShaping;
+using System.Reflection;
 using System.Text;
 
 namespace CompanyEmployees.Extensions
@@ -109,6 +110,10 @@ namespace CompanyEmployees.Extensions
                     Title = "CompanyEmployee API",
                     Version = "v1"
                 });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
 
                 s.SwaggerDoc("v2", new OpenApiInfo
                 {
