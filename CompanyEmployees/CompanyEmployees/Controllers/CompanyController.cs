@@ -29,9 +29,8 @@ namespace CompanyEmployees.Controllers
             try
             {
                 var companies = await _repository.Company.GetAllCompaniesAsync(false);
-                var addresses = await _repository.Address.GetAddressesAsync(false);
                 foreach (var comp in companies)
-                    comp.Address = addresses.FirstOrDefault(a => a.Code == comp.AddressId);
+                    comp.Address = await _repository.Address.GetAddressAsync(comp.AddressId, false);
 
                 var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
                 return Ok(companiesDto);
