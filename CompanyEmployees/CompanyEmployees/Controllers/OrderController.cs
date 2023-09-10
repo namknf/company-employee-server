@@ -7,6 +7,7 @@ using Entities.RequestFeatures;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Repository.DataShaping;
 
 namespace CompanyEmployees.Controllers
 {
@@ -17,12 +18,14 @@ namespace CompanyEmployees.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+        private readonly IDataShaper<OrderDto> _dataShaper;
 
-        public OrderController(IRepositoryManager repository, ILoggerService logger, IMapper mapper)
+        public OrderController(IRepositoryManager repository, ILoggerService logger, IMapper mapper, IDataShaper<OrderDto> dataShaper)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _dataShaper = dataShaper;
         }
 
         [HttpGet]
@@ -38,7 +41,7 @@ namespace CompanyEmployees.Controllers
             var ordersFromDb = await _repository.Order.GetOrdersAsync(companyId, parms, false);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(ordersFromDb.MetaData));
             var ordersDto = _mapper.Map<IEnumerable<OrderDto>>(ordersFromDb);
-            return Ok(ordersDto);
+            return Ok(_dataShaper.ShapeData(ordersDto, parms.Fields));
         }
 
         [HttpGet("{id}", Name = "OrderById")]
