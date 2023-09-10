@@ -7,6 +7,7 @@ using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Repository.DataShaping;
 
 namespace CompanyEmployees.Controllers
 {
@@ -17,12 +18,14 @@ namespace CompanyEmployees.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+        private readonly IDataShaper<CompanyDto> _dataShaper;
 
-        public CompanyController(IRepositoryManager repository, ILoggerService logger, IMapper mapper)
+        public CompanyController(IRepositoryManager repository, ILoggerService logger, IMapper mapper, IDataShaper<CompanyDto> dataShaper)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _dataShaper = dataShaper;
         }
 
         [HttpGet]
@@ -33,7 +36,7 @@ namespace CompanyEmployees.Controllers
                 var companies = await _repository.Company.GetAllCompaniesAsync(parms, false);
                 Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(companies.MetaData));
                 var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
-                return Ok(companiesDto);
+                return Ok(_dataShaper.ShapeData(companiesDto, parms.Fields));
             }
             catch (Exception ex)
             {
