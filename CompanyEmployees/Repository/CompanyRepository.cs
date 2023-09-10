@@ -14,12 +14,12 @@ namespace Repository
 
         public async Task<PagedList<Company>> GetAllCompaniesAsync(CompanyParameters parms, bool trackChanges)
         {
-            var companies = await FindAll(trackChanges).OrderBy(c => c.Name).ToListAsync();
+            var companies = await FindAll(trackChanges).Include(c => c.Address).Where(c => c.Address.Country == parms.Country).OrderBy(c => c.Name).ToListAsync();
             return PagedList<Company>.ToPagedList(companies, parms.PageNumber, parms.PageSize);
         }
 
         public async Task<Company?> GetCompanyAsync(Guid companyId, bool trackChanges) => 
-            await FindByCondition(c => c.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();
+            await FindByCondition(c => c.Id.Equals(companyId), trackChanges).Include(c => c.Address).SingleOrDefaultAsync();
 
         public void CreateCompany(Company company) => Create(company);
 
