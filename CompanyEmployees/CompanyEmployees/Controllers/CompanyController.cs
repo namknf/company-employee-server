@@ -35,7 +35,7 @@ namespace CompanyEmployees.Controllers
             return Ok();
         }
 
-        [HttpGet(Name = "GetCompanies"), Authorize]
+        [HttpGet(Name = "GetCompanies"), Authorize(Roles = "Manager")]
         public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters parms)
         {
             try
