@@ -3,6 +3,7 @@ using Entities;
 using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -14,7 +15,9 @@ namespace Repository
 
         public async Task<PagedList<Company>> GetAllCompaniesAsync(CompanyParameters parms, bool trackChanges)
         {
-            var companies = await FindAll(trackChanges).Include(c => c.Address).Where(c => c.Address.Country == parms.Country).OrderBy(c => c.Name).ToListAsync();
+            var companies = await FindAll(trackChanges).Include(c => c.Address).Where(c => c.Address.Country == parms.Country)
+                .FilterCompanies(parms.Country).Search(parms.SearchTerm).Sort(parms.OrderBy)
+                .OrderBy(c => c.Name).ToListAsync();
             return PagedList<Company>.ToPagedList(companies, parms.PageNumber, parms.PageSize);
         }
 

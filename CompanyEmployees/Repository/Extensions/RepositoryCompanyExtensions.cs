@@ -1,0 +1,31 @@
+﻿using Entities.Models;
+using System.Linq.Dynamic.Core;
+using Repository.Extensions.Utility;
+
+namespace Repository.Extensions
+{
+    public static class RepositoryCompanyExtensions
+    {
+        public static IQueryable<Company> FilterCompanies(this IQueryable<Company> companies, string country) => companies.Where(c => c.Address.Country == country);
+
+        public static IQueryable<Company> Search(this IQueryable<Company> company, string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return company;
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return company.Where(e => e.Name.ToLower().Contains(lowerCaseTerm));
+        }
+
+        public static IQueryable<Company> Sort(this IQueryable<Company> companies, string orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+                return companies.OrderBy(e => e.Name);
+
+            var orderQuery = OrderQueryBuilder.CreateOrderQuery<Company>(orderByQueryString);
+
+            if (string.IsNullOrWhiteSpace(orderQuery))
+                return companies.OrderBy(e => e.Name);
+            return companies.OrderBy(orderQuery);
+        }
+    }
+}
