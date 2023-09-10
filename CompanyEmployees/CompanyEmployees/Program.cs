@@ -23,6 +23,7 @@ builder.Services.AddControllers(conf =>
   .AddCustomCSVFormatter();
 
 builder.Services.ConnectToDb(builder.Configuration);
+builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.ConfigureVersioning();
