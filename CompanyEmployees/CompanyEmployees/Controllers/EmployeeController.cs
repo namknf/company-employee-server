@@ -7,6 +7,7 @@ using Entities.RequestFeatures;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace CompanyEmployees.Controllers
 {
@@ -27,6 +28,10 @@ namespace CompanyEmployees.Controllers
             _dataShaper = dataShaper;
         }
 
+        /// <summary>
+        /// Запрос информации об опциях соединения, доступных в цепочке запросов/ответов, идентифицируемой запрашиваемым URI
+        /// </summary>
+        /// <returns></returns>
         [HttpOptions]
         public IActionResult GetCompaniesOptions()
         {
@@ -34,8 +39,20 @@ namespace CompanyEmployees.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Получение всех сотрудников компании / запрос на заголовки
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <param name="employeeParameters">Параметры запроса</param>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="400">Невалидные параметры</response>
+        /// <response code="404">Компания с таким id не найдена</response>
+        /// <returns>Сотрудники</returns>
         [HttpGet]
         [HttpHead]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParameters)
         {
             if (!employeeParameters.ValidAgeRange)
@@ -54,7 +71,17 @@ namespace CompanyEmployees.Controllers
             return Ok(_dataShaper.ShapeData(employeesDto, employeeParameters.Fields));
         }
 
+        /// <summary>
+        /// Получение конкретного сотрудника компании
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <param name="id">Идентификатор сотрудника</param>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="404">Сотрудник с таким id не найден</response>
+        /// <returns>Найденный сотрудник</returns>
         [HttpGet("{id}", Name = "GetEmployeeForCompany")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetEmployee(Guid companyId, Guid id)
         {
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
@@ -77,8 +104,20 @@ namespace CompanyEmployees.Controllers
             }
         }
 
+        /// <summary>
+        /// Добавление нового сотрудника
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <param name="employee">Модель сотрудника для создания</param>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="400">Невалидные параметры</response>
+        /// <response code="404">Отсутствует модель для добавления</response>
+        /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto employee)
         {
             if (employee == null)
@@ -104,8 +143,14 @@ namespace CompanyEmployees.Controllers
             }, employeeToReturn);
         }
 
+        /// <summary>
+        /// Удаление сотрудника
+        /// </summary>
+        /// <response code="204">Успешное выполнение</response>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> DeleteEmployeeForCompany()
         {
             var employeeForCompany = HttpContext.Items["employee"] as Employee;
@@ -114,9 +159,16 @@ namespace CompanyEmployees.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Обновление данных о сотруднике
+        /// </summary>
+        /// <param name="employee">Обновленная модель</param>
+        /// <response code="204">Успешное выполнение</response>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> UpdateEmployeeForCompany([FromBody] EmployeeForUpdateDto employee)
         {
             var employeeEntity = HttpContext.Items["employee"] as Employee;
@@ -125,8 +177,19 @@ namespace CompanyEmployees.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Обновление определнных свойств сотрудника
+        /// </summary>
+        /// <param name="patchDoc">Параметры для обновления</param>
+        /// <response code="204">Успешное выполнение</response>
+        /// <response code="400">Отсутствуют параметры для обновления</response>
+        /// <response code="422">Невалидный стейт модели</response>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
+        [ProducesResponseType((int)HttpStatusCode.UnprocessableEntity)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> PartiallyUpdateEmployeeForCompany([FromBody] JsonPatchDocument<EmployeeForUpdateDto> patchDoc)
         {
             if (patchDoc == null)

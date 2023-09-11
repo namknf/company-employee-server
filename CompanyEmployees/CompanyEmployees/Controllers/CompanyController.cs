@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace CompanyEmployees.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/companies")]
     [ApiExplorerSettings(GroupName = "v1")]
     [ApiController]
     public class CompanyController : ControllerBase
@@ -29,6 +29,10 @@ namespace CompanyEmployees.Controllers
             _dataShaper = dataShaper;
         }
 
+        /// <summary>
+        /// Запрос информации об опциях соединения, доступных в цепочке запросов/ответов, идентифицируемой запрашиваемым URI
+        /// </summary>
+        /// <returns></returns>
         [HttpOptions]
         public IActionResult GetCompaniesOptions()
         {

@@ -28,6 +28,10 @@ namespace CompanyEmployees.Controllers
             _dataShaper = dataShaper;
         }
 
+        /// <summary>
+        /// Запрос информации об опциях соединения, доступных в цепочке запросов/ответов, идентифицируемой запрашиваемым URI
+        /// </summary>
+        /// <returns></returns>
         [HttpOptions]
         public IActionResult GetCompaniesOptions()
         {
@@ -35,6 +39,12 @@ namespace CompanyEmployees.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Получение заказов / запрос на заголовки
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <param name="parms">Параметры запроса</param>
+        /// <returns></returns>
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetOrdersForCompany(Guid companyId, OrderParameters parms)
@@ -52,6 +62,12 @@ namespace CompanyEmployees.Controllers
             return Ok(_dataShaper.ShapeData(ordersDto, parms.Fields));
         }
 
+        /// <summary>
+        /// Получение конкретного заказа
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <param name="id">Идентификатор заказа</param>
+        /// <returns>Заказ</returns>
         [HttpGet("{id}", Name = "OrderById")]
         public async Task<IActionResult> GetOrder(Guid companyId, Guid id)
         {
@@ -75,6 +91,12 @@ namespace CompanyEmployees.Controllers
             }
         }
 
+        /// <summary>
+        /// Добавление нового заказа
+        /// </summary>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <param name="order">Модель для создания</param>
+        /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateOrderForCompany(Guid companyId, [FromBody] OrderForCreationDto order)
@@ -102,6 +124,12 @@ namespace CompanyEmployees.Controllers
             }, orderToReturn);
         }
 
+        /// <summary>
+        /// Удаление заказа
+        /// </summary>
+        /// <param name="id">Идентификатор заказа</param>
+        /// <param name="companyId">Идентификатор компании</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateOrderForCompanyExistsAttribute))]
         public async Task<IActionResult> DeleteOrder(Guid id, Guid companyId)
@@ -117,6 +145,11 @@ namespace CompanyEmployees.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Обновление данных о заказе
+        /// </summary>
+        /// <param name="order">Обновленная модель заказа</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidateOrderForCompanyExistsAttribute))]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -128,9 +161,14 @@ namespace CompanyEmployees.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Обновление конкретных свойств заказа
+        /// </summary>
+        /// <param name="patchDoc">Параметры запроса</param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         [ServiceFilter(typeof(ValidateOrderForCompanyExistsAttribute))]
-        public async Task<IActionResult> PartiallyUpdateOrderForCompany(Guid companyId, Guid id, [FromBody] JsonPatchDocument<OrderForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdateOrderForCompany([FromBody] JsonPatchDocument<OrderForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
             {
